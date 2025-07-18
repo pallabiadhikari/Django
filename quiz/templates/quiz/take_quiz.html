@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ quiz.title }} | QuizMaster{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">{{ quiz.title }}</h2>
+    <span class="badge bg-primary rounded-pill">{{ quiz.category }}</span>
+  </div>
+
+  <form method="post" id="quizForm">
+    {% csrf_token %}
+    
+    <div class="card mb-4">
+      <div class="card-header bg-light">
+        <div class="d-flex justify-content-between">
+          <span>Question <span id="currentQuestion">1</span>/10</span>
+          <span class="text-muted" id="timer">00:00</span>
+        </div>
+        <div class="progress mt-2" style="height: 5px;">
+          <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+        </div>
+      </div>
+      
+      <div class="card-body">
+        {% for field in form %}
+        <div class="question-container mb-4" style="display: none;">
+          <h5 class="mb-3">{{ field.label }}</h5>
+          <div class="ps-3">
+            {% for choice in field %}
+            <div class="form-check mb-2">
+              {{ choice.tag }}
+              <label class="form-check-label" for="{{ choice.id_for_label }}">
+                {{ choice.choice_label }}
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <div class="d-flex justify-content-between">
+      <button type="button" class="btn btn-outline-secondary" id="prevBtn" disabled>
+        <i class="bi bi-arrow-left me-1"></i> Previous
+      </button>
+      <button type="submit" class="btn btn-primary px-4" id="submitBtn" style="display: none;">
+        Submit Quiz <i class="bi bi-check2 ms-1"></i>
+      </button>
+      <button type="button" class="btn btn-outline-primary" id="nextBtn">
+        Next <i class="bi bi-arrow-right ms-1"></i>
+      </button>
+    </div>
+  </form>
+</div>
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Quiz navigation
+    const questions = document.querySelectorAll('.question-container');
+    const totalQuestions = questions.length;
+    let currentQuestion = 0;
+    let quizDuration = 0;
+    let timerInterval;
+    
+    // Timer function
+    function startTimer() {
+      timerInterval = setInterval(function() {
+        quizDuration++;
+        const minutes = Math.floor(quizDuration / 60).toString().padStart(2, '0');
+        const seconds = (quizDuration % 60).toString().padStart(2, '0');
+        document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+      }, 1000);
+    }
+    
+    // Show question function
+    function showQuestion(index) {
+      questions.forEach((q, i) => {
+        q.style.display = i === index ? 'block' : 'none';
+      });
+      document.getElementById('currentQuestion').textContent = index + 1;
+      document.getElementById('progressBar').style.width = `${((index + 1) / totalQuestions) * 100}%`;
+      
+      // Button controls
+      document.getElementById('prevBtn').disabled = index === 0;
+      document.getElementById('nextBtn').style.display = index === totalQuestions - 1 ? 'none' : 'block';
+      document.getElementById('submitBtn').style.display = index === totalQuestions - 1 ? 'block' : 'none';
+    }
+    
+    // Navigation controls
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      if (currentQuestion > 0) {
+        showQuestion(--currentQuestion);
+      }
+    });
+    
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      if (currentQuestion < totalQuestions - 1) {
+        showQuestion(++currentQuestion);
+      }
+    });
+    
+    // Initialize
+    showQuestion(0);
+    startTimer();
+    
+    // Clean up timer when form submits
+    document.getElementById('quizForm').addEventListener('submit', function() {
+      clearInterval(timerInterval);
+    });
+  });
+</script>
+{% endblock %}
+{% endblock %}

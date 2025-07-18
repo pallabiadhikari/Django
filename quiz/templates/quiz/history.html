@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Your Quiz History</h2>
+  {% if results %}
+    <ul>
+      {% for result in results %}
+        <li>
+          {{ result.quiz.title }} — Score: {{ result.score }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>You haven't taken any quizzes yet.</p>
+  {% endif %}
+  <a href="{% url 'home' %}">Back to Home</a>
+{% endblock %}

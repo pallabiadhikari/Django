@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="hero-section py-5 mb-5 text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">Expand Your Knowledge</h1>
+        <p class="lead mb-4">Challenge yourself with our interactive quizzes</p>
+        {% if user.is_authenticated %}
+            <a href="#quizzes" class="btn btn-light btn-lg px-4 me-2">Start Learning</a>
+            <a href="{% url 'quiz_history' %}" class="btn btn-outline-light btn-lg px-4">View Progress</a>
+        {% else %}
+            <a href="{% url 'register' %}" class="btn btn-light btn-lg px-4 me-2">Get Started</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg px-4">Login</a>
+        {% endif %}
+    </div>
+</div>
+
+<section id="quizzes" class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Available Quizzes</h2>
+    </div>
+
+    <div class="row g-4">
+        {% for quiz in quizzes %}
+        <div class="col-md-4">
+            <div class="card quiz-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-primary">{{ quiz.category }}</span>
+                        <small class="text-muted">{{ quiz.questions.count }} questions</small>
+                    </div>
+                    <h4 class="card-title">{{ quiz.title }}</h4>
+                    <p class="card-text text-muted">{{ quiz.description|truncatechars:100 }}</p>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="{% url 'take_quiz' quiz.id %}" class="btn btn-primary w-100">
+                        Start Quiz <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-emoji-frown display-4 text-muted mb-3"></i>
+            <h4>No quizzes available yet</h4>
+            {% if user.is_staff %}
+            <a href="{% url 'create_quiz' %}" class="btn btn-primary mt-3">
+                Create New Quiz
+            </a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
