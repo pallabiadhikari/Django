@@ -1,0 +1,70 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django-specific
+*.log
+*.pot
+*.pyc
+*.pyo
+*.sqlite3
+*.db
+*.mo
+
+# Django migrations
+*/migrations/
+!*/migrations/__init__.py
+
+# Environment variables
+.env
+.env.*
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# VS Code settings
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# PyCharm
+.idea/
+
+# Node modules (if using npm for front-end)
+node_modules/
+
+# Static/media root
+/staticfiles/
+/media/
+
+# Coverage reports
+htmlcov/
+.coverage
+.tox/
+.nox/
+coverage.xml
+
+# Testing and pytest
+.pytest_cache/
+*.cover
+.cache
+nosetests.xml
+test-results/
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Git backup
+*.orig

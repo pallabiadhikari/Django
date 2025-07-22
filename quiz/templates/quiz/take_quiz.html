@@ -98,10 +98,19 @@
     });
     
     document.getElementById('nextBtn').addEventListener('click', () => {
-      if (currentQuestion < totalQuestions - 1) {
-        showQuestion(++currentQuestion);
-      }
-    });
+      const currentField = questions[currentQuestion];
+      const inputs = currentField.querySelectorAll('input[type="radio"]');
+      const isChecked = Array.from(inputs).some(input => input.checked);
+
+  if (!isChecked) {
+    alert("Please select an option before continuing.");
+    return;
+  }
+
+  if (currentQuestion < totalQuestions - 1) {
+    showQuestion(++currentQuestion);
+  }
+});
     
     // Initialize
     showQuestion(0);
